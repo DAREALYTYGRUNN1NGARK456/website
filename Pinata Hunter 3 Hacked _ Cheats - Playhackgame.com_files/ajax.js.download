@@ -1,0 +1,74 @@
+﻿function GetXmlHttpObject() {
+	try {
+		// Firefox, Opera 8.0+, Safari
+		xmlHttp=new XMLHttpRequest();
+	} catch (e) {
+		// Internet Explorer
+		try {
+			xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			try {
+				xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch (e) {
+				alert("Your browser does not support AJAX!");
+				return false;
+			}
+		}
+	}
+	return xmlHttp;
+}
+
+ratingxmlhttp=GetXmlHttpObject();
+favxmlhttp=GetXmlHttpObject();
+
+
+
+function rateGame(ratinglink) {
+	ratingxmlhttp.onreadystatechange=ratingStateChanged;
+	ratingxmlhttp.open("GET", ratinglink,true);
+	ratingxmlhttp.send(null);
+}
+
+function ratingStateChanged() {
+	if (ratingxmlhttp.readyState==4) {
+		document.getElementById("ratingspan").innerHTML+="<br />Thank you！";
+
+		// find out from Joey if there is code to prevent people from rating games 500 times. If there is, there's no need for this block
+		document.getElementById("rate1").href="#";
+		document.getElementById("rate2").href="#";
+		document.getElementById("rate3").href="#";
+		document.getElementById("rate4").href="#";
+		document.getElementById("rate5").href="#";
+		// ---------------------------------------
+
+		document.getElementById("current-rating").style.width=ratingxmlhttp.responseText+"%";
+
+	}
+}
+
+function getGameRating(intGameId){
+	ratingxmlhttp.onreadystatechange=ratingStateChanged2;
+	ratingxmlhttp.open("GET", "/rating.asp?id="+intGameId,true);
+	ratingxmlhttp.send(null);
+}
+
+function ratingStateChanged2() {
+	if (ratingxmlhttp.readyState==4) {
+		document.getElementById("current-rating").style.width=ratingxmlhttp.responseText+"%";
+	}
+}
+
+
+function modFav(favlink) {
+	favxmlhttp.onreadystatechange=favStateChanged;
+	favxmlhttp.open("GET", favlink ,true);
+	favxmlhttp.send(null);
+}
+
+
+
+function favStateChanged() {
+	if (favxmlhttp.readyState==4) {
+		document.getElementById("favspan").innerHTML = favxmlhttp.responseText;
+	}
+}
